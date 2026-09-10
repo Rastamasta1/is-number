@@ -30,4 +30,23 @@ describe('package.json exports', function() {
   it('should leave "main" as "index.js"', function() {
     assert.strictEqual(pkg.main, 'index.js');
   });
+
+  it('should have a "types" field pointing at "./index.d.ts"', function() {
+    assert.strictEqual(pkg.types, './index.d.ts');
+  });
+
+  it('should include "index.d.ts" in the "files" array', function() {
+    assert(pkg.files.indexOf('index.d.ts') !== -1, 'expected "files" to include "index.d.ts"');
+  });
+});
+
+describe('index.d.ts', function() {
+  it('should exist on disk', function() {
+    assert(fs.existsSync(path.join(__dirname, 'index.d.ts')), 'expected index.d.ts to exist');
+  });
+
+  it('should declare a function returning boolean', function() {
+    var dts = fs.readFileSync(path.join(__dirname, 'index.d.ts'), 'utf8');
+    assert(/:\s*boolean/.test(dts), 'expected index.d.ts to declare a boolean return type');
+  });
 });
