@@ -18,11 +18,15 @@
     "index.js"
   ],
   "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "engines": {
     "node": ">=0.12.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test.js exports.test.js"
   },
   "devDependencies": {
     "ansi": "^0.3.1",
