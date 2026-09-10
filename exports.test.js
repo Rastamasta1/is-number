@@ -50,3 +50,40 @@ describe('index.d.ts', function() {
     assert(/:\s*boolean/.test(dts), 'expected index.d.ts to declare a boolean return type');
   });
 });
+
+describe('advertised paths are shipped', function() {
+  var pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
+
+  function collectAdvertisedPaths(pkg) {
+    var paths = [];
+    if (typeof pkg.main === 'string') paths.push(pkg.main);
+    if (typeof pkg.types === 'string') paths.push(pkg.types);
+    if (pkg.exports && typeof pkg.exports === 'object') {
+      Object.keys(pkg.exports).forEach(function(key) {
+        var value = pkg.exports[key];
+        if (typeof value === 'string' && value !== './package.json') {
+          paths.push(value);
+        }
+      });
+    }
+    return paths;
+  }
+
+  function normalize(p) {
+    return p.replace(/^\.\//, '');
+  }
+
+  var advertised = collectAdvertisedPaths(pkg);
+
+  advertised.forEach(function(advertisedPath) {
+    var normalized = normalize(advertisedPath);
+
+    it('"' + advertisedPath + '" should exist on disk', function() {
+      assert(fs.existsSync(path.join(__dirname, normalized)), 'expected "' + advertisedPath + '" to exist on disk');
+    });
+
+    it('"' + advertisedPath + '" should be covered by "files"', function() {
+      assert(pkg.files.indexOf(normalized) !== -1, 'expected "files" to cover "' + advertisedPath + '"');
+    });
+  });
+});
