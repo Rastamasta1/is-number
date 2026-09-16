@@ -23,8 +23,6 @@ console.log(+'   '); //=> 0
 console.log(typeof NaN); //=> 'number'
 ```
 
-Whitespace-padded strings are not treated as a number by this library, as of this change: `isNumber('   56')` returns false, while `isNumber('56')` returns true. This is a deliberate drill change on this fork (2026-09-16), so a reader is not misled into thinking the upstream library behaves this way.
-
 This library offers a performant way to smooth out edge cases like these.
 
 ## Usage
